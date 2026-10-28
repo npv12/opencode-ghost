@@ -8,14 +8,15 @@ const root = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
 
 test('public package metadata, license and allowlisted files are self-contained', () => {
   const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
-  assert.equal(pkg.version, '0.2.6');
+  assert.equal(pkg.version, '0.3.0');
   assert.equal(pkg.license, 'MIT');
   assert.equal(pkg.author, 'pank-su');
   assert.equal(pkg.private, true);
   assert.match(pkg.repository.url, /github\.com\/pank-su\/opencode-prompt-completion\.git$/);
   assert.equal(pkg.exports['./tui'], './tui.ts');
-  assert.equal(pkg.exports['.'], undefined, 'CLI-only plugin must not register a server entry');
-  assert.deepEqual(pkg.files, ['tui.ts', 'src', 'README.md', 'LICENSE']);
+  assert.equal(pkg.exports['.'], undefined, 'completion needs no server entry');
+  assert.equal(pkg.exports['./gui-experimental'], './dist/gui-experimental.cjs');
+  assert.deepEqual(pkg.files, ['tui.ts', 'src', 'dist/gui-experimental.cjs', 'README.md', 'LICENSE']);
   for (const file of pkg.files) {
     const resolved = path.resolve(root, file);
     assert.ok(resolved.startsWith(root + path.sep));

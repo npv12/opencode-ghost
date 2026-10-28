@@ -1,4 +1,4 @@
-import { buildContext } from './context.mjs';
+import { contextText } from './context.mjs';
 
 const COMMON_RULES = [
   '- Reply in the same language the user writes in.',
@@ -61,7 +61,7 @@ export function makePredictionPrompt(prefix = '', context = '[]') {
   const budget = MAX_TOTAL_CHARS - header.length - CONTEXT_LABEL.length - 2;
   // Budget the message text before serialization; slicing JSON breaks escaping
   // and delimiters. The header leaves room even for a fully escaped draft.
-  const bounded = buildContext(messages, { maxCharacters: Math.min(MAX_CONTEXT_LENGTH, budget) }).text;
+  const bounded = contextText(messages, { maxCharacters: Math.min(MAX_CONTEXT_LENGTH, budget) });
   return `${header}\n${CONTEXT_LABEL}\n${bounded}`;
 }
 

@@ -112,17 +112,31 @@ function bound(selected, maxCharacters) {
 /**
  * Build the bounded JSON conversation context for a stateless prediction
  * request. Only recent user and assistant text is selected; tools, tool
- * results, reasoning, files, images and system messages are ignored. The
- * revision hashes the selected bounded data so transient events during a
- * running execution do not change it.
+ * results, reasoning, files, images and system messages are ignored.
+ *
+ * Pure and synchronous: it does not call Node-only APIs. GUI hosts can build
+ * the context text even when this module's `node:crypto` import is inert.
+ *
+ * @param {unknown} messages messages in chronological order (oldest first)
+ * @param {{maxCharacters?: number, running?: boolean}} [options]
+ * @returns {string} bounded JSON array of {role, text}
+ */
+export function contextText(messages, { maxCharacters = DEFAULT_MAX_CHARACTERS, running = false } = {}) {
+  const selected = select(messages, running === true);
+  return bound(selected, maxCharacters);
+}
+
+/**
+ * Build the bounded JSON conversation context plus its revision. The revision
+ * hashes the selected bounded data so transient events during a running
+ * execution do not change it. Requires a Node-compatible SHA-256 runtime.
  *
  * @param {unknown} messages messages in chronological order (oldest first)
  * @param {{maxCharacters?: number, running?: boolean}} [options]
  * @returns {{text: string, revision: string}}
  */
-export function buildContext(messages, { maxCharacters = DEFAULT_MAX_CHARACTERS, running = false } = {}) {
-  const selected = select(messages, running === true);
-  const text = bound(selected, maxCharacters);
+export function buildContext(messages, options = {}) {
+  const text = contextText(messages, options);
   const revision = createHash('sha256').update(text, 'utf8').digest('hex');
   return { text, revision };
 }

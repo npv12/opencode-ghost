@@ -30,4 +30,9 @@ jobs:
       - run: bun install --frozen-lockfile --ignore-scripts
       - if: matrix.runtime == 'legacy'
         run: bun add --dev --exact --ignore-scripts @opencode/plugin@2.0.27 @opencode/theme@2.0.27 @opentui/core@0.5.17 @opentui/solid@0.5.17 @opentui/keymap@0.5.17
-      - run: bun run check
+      - if: matrix.runtime == 'current'
+        run: bun run check
+      - if: matrix.runtime == 'current'
+        run: git diff --exit-code -- dist/gui-experimental.cjs
+      - if: matrix.runtime == 'legacy'
+        run: bun run test && bun run typecheck
