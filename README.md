@@ -5,11 +5,11 @@
 > originally written by [pank-su](https://github.com/pank-su). The original
 > copyright and MIT license are preserved; see [License](#license).
 
-An OpenCode V2 terminal and Desktop plugin that shows a grey continuation directly in the prompt
-field. `Tab` accepts the whole continuation, `Option+→` on macOS or `Ctrl+→` on
-Linux/Windows accepts the next word, and `Esc` hides the hint. Until you accept
-it, the hint is not part of the prompt text, and messages are never sent
-automatically.
+An OpenCode V2 terminal plugin that shows a grey continuation directly in the
+prompt field. `Tab` accepts the whole continuation, `Option+→` on macOS or
+`Ctrl+→` on Linux/Windows accepts the next word, and `Esc` hides the hint.
+Until you accept it, the hint is not part of the prompt text, and messages are
+never sent automatically.
 
 **Automatic mode is on by default: drafts are sent to the selected model before
 Enter and requests consume quota or paid tokens.** Set `automatic: false` for
@@ -22,10 +22,8 @@ manual-only requests; see [Configuration](#configuration).
 - A configured provider and an available model in OpenCode.
 - A current OpenCode V2 CLI with `opencode plugin add`.
 
-The terminal part attaches through the global `cli.json`, including when you
-work with a remote server. Desktop uses the global `opencode.json(c)` instead
-and requires OpenCode `2.2.0` with its experimental GUI plugin API. OpenCode V1
-is not supported.
+The plugin attaches through the global `cli.json`, including when you work with
+a remote server. OpenCode V1 is not supported.
 
 ## Installation
 
@@ -48,7 +46,6 @@ You can also add the package directly to `~/.config/opencode/cli.json`
 
 Merge the entry into your existing `plugins` array; do not replace other plugins.
 Use `cli.json`, not `opencode.json`, so the plugin stays local with remote servers.
-The npm package ships both the terminal entry and the prebuilt Desktop bundle.
 
 After installing, open a session, type at least three characters and leave the
 cursor at the end. After a pause and a model response, grey text may appear. If
@@ -57,56 +54,6 @@ the plugin did not load into an already open TUI, use `/reload`.
 When migrating from the old installer, replace its absolute-path plugin entry
 with the npm package entry and carry over any `options`. Do not keep both
 entries. Old release directories can remain on disk.
-
-## Desktop installation
-
-Add the package to `plugins` in the global `~/.config/opencode/opencode.json(c)`
-(or `$XDG_CONFIG_HOME/opencode/opencode.json(c)`). A `cli.json` entry alone does
-not load Desktop plugins. Merge this entry; preserve your other plugins:
-
-```json
-{
-  "plugins": [{
-    "package": "@npv12/opencode-ghost",
-    "options": {
-      "promptCompletion": {
-        "enabled": true,
-        "automatic": true,
-        "predictionModel": "openai/gpt-5.2#low",
-        "timeoutMs": 7000
-      }
-    }
-  }]
-}
-```
-
-**Enabling automatic Desktop completion sends drafts to the model before Enter
-and consumes quota or paid tokens.** Use a model available on the connected
-server. Desktop is disabled by default; set `enabled: true` or use the
-"Enable prompt completion" command. That command saves a window preference;
-once saved, it takes precedence over the initial `enabled` option.
-
-Desktop options are nested under `promptCompletion`, independently of the
-terminal options in `cli.json`. The debounce, cooldown, timeout and automatic
-options have the same defaults and ranges as the terminal. Desktop model
-overrides accept a string `provider/model#variant` or the legacy object
-`{ "providerID": "openai", "id": "gpt-5.2", "variant": "low" }`.
-Without an override, Desktop follows the composer model and chooses an available
-`none`, `minimal` or `low` variant without changing the main session model.
-
-`Tab` accepts the hint, `Option+Right` / `Ctrl+Right` accepts one word, and `Esc`
-hides it. `Cmd+Alt+J` / `Ctrl+Alt+J` requests a hint manually. The command palette
-also provides "Desktop completion status" diagnostics. The hint never sends
-the prompt, and accepting it uses native insertion to preserve mentions.
-
-The published npm package includes a prebuilt GUI bundle: no local build is
-needed to install it. This experimental adapter targets the Desktop `2.2.0`
-composer DOM; unknown markup, IME, selections, native menus and a caret away
-from the end disable hints. Its external overlay is hidden from accessibility APIs and is
-not inserted into the editable text. It may need an update after Desktop
-changes. Do not run this package's Desktop completion alongside the older
-completion embedded in another plugin, or both may request and show hints.
-This package does not migrate or disable that older plugin automatically.
 
 ## Updating
 
@@ -231,9 +178,6 @@ To disable it without removing its package entry, append
 - `src/editor/` - the editor adapter and the inline ghost renderer.
 - `src/opencode/` - OpenCode integration: options, scheduler, commands and
   snapshot.
-- `src/desktop/` - Desktop lifecycle, native insertion and read-only DOM adapter.
-- `dist/gui-experimental.cjs` - Desktop bundle built from `src/desktop/prompts.ts`
-  during publish; not committed.
 
 ## Development
 
@@ -244,13 +188,11 @@ bun install --frozen-lockfile --ignore-scripts
 bun run check
 ```
 
-`check` builds the Desktop bundle and runs Node, TUI renderer, Desktop DOM tests
-and both TypeScript checks. The generated GUI bundle is not committed; the
-publish workflow builds it before packing the npm tarball. The tests use a
-stub model and the real native textarea and need no API keys. GitHub Actions
-checks both renderer generations on Ubuntu, macOS and Windows; Desktop checks
-run with the current SDK only. A workflow's
-presence does not replace its actual result or a native OpenCode TUI smoke test.
+`check` runs the Node and TUI renderer tests and the TypeScript check. The tests
+use a stub model and the real native textarea and need no API keys. GitHub
+Actions checks both renderer generations on Ubuntu, macOS and Windows. A
+workflow's presence does not replace its actual result or a native OpenCode TUI
+smoke test.
 
 ## License
 

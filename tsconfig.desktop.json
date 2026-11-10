@@ -1,8 +1,0 @@
-{
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "jsxImportSource": "solid-js"
-  },
-  "include": ["src/desktop/**/*.ts"],
-  "exclude": []
-}

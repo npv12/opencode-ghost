@@ -32,7 +32,5 @@ jobs:
         run: bun add --dev --exact --ignore-scripts @opencode/plugin@2.0.27 @opencode/theme@2.0.27 @opentui/core@0.5.17 @opentui/solid@0.5.17 @opentui/keymap@0.5.17
       - if: matrix.runtime == 'current'
         run: bun run check
-      - if: matrix.runtime == 'current'
-        run: node -e "require('node:fs').accessSync('dist/gui-experimental.cjs')"
       - if: matrix.runtime == 'legacy'
         run: bun run test && bun run typecheck

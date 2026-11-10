@@ -114,8 +114,7 @@ function bound(selected, maxCharacters) {
  * request. Only recent user and assistant text is selected; tools, tool
  * results, reasoning, files, images and system messages are ignored.
  *
- * Pure and synchronous: it does not call Node-only APIs. GUI hosts can build
- * the context text even when this module's `node:crypto` import is inert.
+ * Pure and synchronous: it does not call Node-only APIs.
  *
  * @param {unknown} messages messages in chronological order (oldest first)
  * @param {{maxCharacters?: number, running?: boolean}} [options]

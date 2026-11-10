@@ -17,10 +17,9 @@ test('public package metadata, license and allowlisted files are self-contained'
   assert.match(pkg.repository.url, /github\.com\/npv12\/opencode-ghost\.git$/);
   assert.equal(pkg.exports['./tui'], './tui.ts');
   assert.equal(pkg.exports['.'], undefined, 'completion needs no server entry');
-  assert.equal(pkg.exports['./gui-experimental'], './dist/gui-experimental.cjs');
-  assert.deepEqual(pkg.files, ['tui.ts', 'src', 'dist/gui-experimental.cjs', 'README.md', 'LICENSE']);
+  assert.equal(pkg.exports['./gui-experimental'], undefined, 'Desktop support was removed');
+  assert.deepEqual(pkg.files, ['tui.ts', 'src', 'README.md', 'LICENSE']);
   for (const file of pkg.files) {
-    if (file.startsWith('dist/')) continue;
     const resolved = path.resolve(root, file);
     assert.ok(resolved.startsWith(root + path.sep));
     assert.ok(fs.existsSync(resolved), file);
@@ -43,6 +42,11 @@ test('renderer peers cover both tested host versions; the host SDK is developmen
     assert.notEqual(pkg.peerDependenciesMeta?.[name]?.optional, true, name);
   }
   for (const hook of ['preinstall', 'install', 'postinstall', 'prepare', 'prepack']) assert.equal(pkg.scripts[hook], undefined, hook);
+  assert.equal(pkg.scripts.build, undefined);
+  assert.equal(pkg.scripts.bundle, undefined);
+  assert.equal(pkg.devDependencies.vitest, undefined);
+  assert.equal(pkg.devDependencies.vite, undefined);
+  assert.equal(pkg.devDependencies.jsdom, undefined);
 });
 
 test('local directory discovery and package loading share a root TUI entry', () => {

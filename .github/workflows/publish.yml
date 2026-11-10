@@ -55,17 +55,10 @@ jobs:
         run: npm version "${RELEASE_TAG#v}" --no-git-tag-version --allow-same-version --ignore-scripts
 
       - name: Typecheck
-        run: |
-          bun run typecheck
-          bun run typecheck:desktop
-
-      - name: Build Desktop bundle
-        run: bun run build
+        run: bun run typecheck
 
       - name: Verify tarball contents
-        run: |
-          test -f dist/gui-experimental.cjs
-          npm pack --dry-run --ignore-scripts
+        run: npm pack --dry-run --ignore-scripts
 
       - name: Check whether this version is already published
         id: published
