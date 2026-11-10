@@ -67,7 +67,19 @@ jobs:
           test -f dist/gui-experimental.cjs
           npm pack --dry-run --ignore-scripts
 
+      - name: Check whether this version is already published
+        id: published
+        run: |
+          VERSION="$(node -p "require('./package.json').version")"
+          if npm view "@npv12/opencode-ghost@$VERSION" version >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "@npv12/opencode-ghost@$VERSION is already on npm; skipping publish."
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Publish to npm
+        if: steps.published.outputs.exists != 'true'
         run: npm publish --access public --provenance --ignore-scripts
 
       - name: Checkout main for version bump
