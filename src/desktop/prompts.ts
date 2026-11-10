@@ -164,7 +164,7 @@ export function setupPromptCompletion(ctx: Context) {
     run: () => { preference.set({ enabled: !enabled() }); dismiss(); enqueue(); } }));
   ctx.add(Command, { id: 'prompt-completion.status', title: 'Desktop completion status', group: 'Prompt', run: () => {
     const value = snapshot(), stats = controller.diagnostics;
-    void ctx.dialogs.alert({ title: 'Desktop completion', description: `Enabled: ${enabled()}. Inline: ${ghost.visible}. State: ${broken ? 'adapter-error' : controller.state.status}. Editor: ${value.reason}. Model: ${value.model ? `${value.model.providerID}/${value.model.id}#${value.model.variant || 'default'}` : 'unavailable'}. Requests: ${stats.requests}. Cache hits: ${stats.cacheHits}. Last latency: ${stats.latencyMs ?? '—'} ms.` });
+    void ctx.dialogs.alert({ title: 'Desktop completion', description: `Enabled: ${enabled()}. Inline: ${ghost.visible}. State: ${broken ? 'adapter-error' : controller.state.status}. Editor: ${value.reason}. Model: ${value.model ? `${value.model.providerID}/${value.model.id}#${value.model.variant || 'default'}` : 'unavailable'}. Requests: ${stats.requests}. Cache hits: ${stats.cacheHits}. Last latency: ${stats.latencyMs ?? 'n/a'} ms.` });
   } });
   const dispose = () => {
     if (disposed) return;

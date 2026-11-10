@@ -33,6 +33,6 @@ jobs:
       - if: matrix.runtime == 'current'
         run: bun run check
       - if: matrix.runtime == 'current'
-        run: git diff --exit-code -- dist/gui-experimental.cjs
+        run: node -e "require('node:fs').accessSync('dist/gui-experimental.cjs')"
       - if: matrix.runtime == 'legacy'
         run: bun run test && bun run typecheck

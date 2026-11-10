@@ -1,4 +1,9 @@
-# OpenCode Prompt Completion
+# OpenCode Ghost
+
+> **Attribution**: This project is a fork of
+> [pank-su/opencode-prompt-completion](https://github.com/pank-su/opencode-prompt-completion),
+> originally written by [pank-su](https://github.com/pank-su). The original
+> copyright and MIT license are preserved; see [License](#license).
 
 An OpenCode V2 terminal and Desktop plugin that shows a grey continuation directly in the prompt
 field. `Tab` accepts the whole continuation, `Option+→` on macOS or `Ctrl+→` on
@@ -25,32 +30,32 @@ is not supported.
 ## Installation
 
 ```sh
-opencode plugin add github:pank-su/opencode-prompt-completion
+opencode plugin add @npv12/opencode-ghost
 ```
 
 OpenCode downloads the package and registers its CLI-only entry. No cloning,
-separate installer, npm account or manual dependency installation is needed.
-OpenCode supplies its plugin API and manages package dependencies, caching and updates.
+separate installer or manual dependency installation is needed. OpenCode
+supplies its plugin API and manages package dependencies, caching and updates.
 
 You can also add the package directly to `~/.config/opencode/cli.json`
 (or `$XDG_CONFIG_HOME/opencode/cli.json`):
 
 ```json
 {
-  "plugins": ["github:pank-su/opencode-prompt-completion"]
+  "plugins": ["@npv12/opencode-ghost"]
 }
 ```
 
 Merge the entry into your existing `plugins` array; do not replace other plugins.
 Use `cli.json`, not `opencode.json`, so the plugin stays local with remote servers.
-GitHub installation uses the repository; no npm release is required.
+The npm package ships both the terminal entry and the prebuilt Desktop bundle.
 
 After installing, open a session, type at least three characters and leave the
 cursor at the end. After a pause and a model response, grey text may appear. If
 the plugin did not load into an already open TUI, use `/reload`.
 
 When migrating from the old installer, replace its absolute-path plugin entry
-with the GitHub package entry and carry over any `options`. Do not keep both
+with the npm package entry and carry over any `options`. Do not keep both
 entries. Old release directories can remain on disk.
 
 ## Desktop installation
@@ -62,7 +67,7 @@ not load Desktop plugins. Merge this entry; preserve your other plugins:
 ```json
 {
   "plugins": [{
-    "package": "github:pank-su/opencode-prompt-completion",
+    "package": "@npv12/opencode-ghost",
     "options": {
       "promptCompletion": {
         "enabled": true,
@@ -94,10 +99,10 @@ hides it. `Cmd+Alt+J` / `Ctrl+Alt+J` requests a hint manually. The command palet
 also provides "Desktop completion status" diagnostics. The hint never sends
 the prompt, and accepting it uses native insertion to preserve mentions.
 
-The GUI bundle is prebuilt in the repository: no local build is needed to
-install it. This experimental adapter targets the Desktop `2.2.0` composer DOM;
-unknown markup, IME, selections, native menus and a caret away from the end
-disable hints. Its external overlay is hidden from accessibility APIs and is
+The published npm package includes a prebuilt GUI bundle: no local build is
+needed to install it. This experimental adapter targets the Desktop `2.2.0`
+composer DOM; unknown markup, IME, selections, native menus and a caret away
+from the end disable hints. Its external overlay is hidden from accessibility APIs and is
 not inserted into the editable text. It may need an update after Desktop
 changes. Do not run this package's Desktop completion alongside the older
 completion embedded in another plugin, or both may request and show hints.
@@ -107,11 +112,12 @@ This package does not migrate or disable that older plugin automatically.
 
 ```sh
 opencode plugin check
-opencode plugin update github:pank-su/opencode-prompt-completion
+opencode plugin update @npv12/opencode-ghost
 ```
 
-To pin a revision, append `#<full-commit-hash>` to the GitHub package specifier.
-Pinned revisions are not updated automatically by `plugin update`.
+To pin a version, install it explicitly, for example
+`@npv12/opencode-ghost@2.0.0`. Pinned versions are not updated automatically by
+`plugin update`.
 
 ## Controls
 
@@ -135,7 +141,7 @@ Use an object instead of the plugin string in `cli.json` to customize completion
 
 ```json
 {
-  "package": "github:pank-su/opencode-prompt-completion",
+  "package": "@npv12/opencode-ghost",
   "options": {
     "automatic": true,
     "typingDebounceMs": 500,
@@ -149,9 +155,9 @@ Use an object instead of the plugin string in `cli.json` to customize completion
 | Option | Default | Range |
 | --- | --- | --- |
 | `automatic` | `true` | `true` or `false` |
-| `typingDebounceMs` | `500` | 100–5000 ms |
-| `cooldownMs` | `1500` | 0–10000 ms |
-| `timeoutMs` | `7000` | 1000–15000 ms |
+| `typingDebounceMs` | `500` | 100-5000 ms |
+| `cooldownMs` | `1500` | 0-10000 ms |
+| `timeoutMs` | `7000` | 1000-15000 ms |
 | `predictionModel` | Current prompt model | OpenCode `provider/model#variant` selector |
 
 For slower providers, set `timeoutMs` to `15000`. Completion status shows the
@@ -187,11 +193,11 @@ Use `#none` only when your model catalog exposes that variant.
 Remove the plugin with:
 
 ```sh
-opencode plugin remove github:pank-su/opencode-prompt-completion
+opencode plugin remove @npv12/opencode-ghost
 ```
 
 To disable it without removing its package entry, append
-`"-panksup.prompt-completion"` after that entry in `plugins`.
+`"-npv12.ghost"` after that entry in `plugins`.
 
 ## Data and limitations
 
@@ -208,7 +214,7 @@ To disable it without removing its package entry, append
   contexts of 32 candidates each.
 - At most one client request is in flight at a time. A timeout and cancellation
   do not guarantee that the provider stops generating and charging tokens.
-- Commands (`/…`, `!…`), child sessions and drafts longer than 2000 UTF-16 units
+- Commands (`/...`, `!...`), child sessions and drafts longer than 2000 UTF-16 units
   are not completed. The prompt needs focus, no selection and the cursor at the
   end.
 - Losing focus, shell mode or an open autocomplete menu hides the hint. An
@@ -218,15 +224,16 @@ To disable it without removing its package entry, append
 
 ## Architecture
 
-- `tui.ts` — discovery entry and OpenCode-owned renderer/reactivity imports.
-- `src/tui.ts` — the plugin implementation and lifecycle wiring.
-- `src/prediction/` — the prediction core: controller, prompt and context
+- `tui.ts` - discovery entry and OpenCode-owned renderer/reactivity imports.
+- `src/tui.ts` - the plugin implementation and lifecycle wiring.
+- `src/prediction/` - the prediction core: controller, prompt and context
   building, word chunking.
-- `src/editor/` — the editor adapter and the inline ghost renderer.
-- `src/opencode/` — OpenCode integration: options, scheduler, commands and
+- `src/editor/` - the editor adapter and the inline ghost renderer.
+- `src/opencode/` - OpenCode integration: options, scheduler, commands and
   snapshot.
-- `src/desktop/` — Desktop lifecycle, native insertion and read-only DOM adapter.
-- `dist/gui-experimental.cjs` — prebuilt Desktop bundle using the same prediction core.
+- `src/desktop/` - Desktop lifecycle, native insertion and read-only DOM adapter.
+- `dist/gui-experimental.cjs` - Desktop bundle built from `src/desktop/prompts.ts`
+  during publish; not committed.
 
 ## Development
 
@@ -238,8 +245,8 @@ bun run check
 ```
 
 `check` builds the Desktop bundle and runs Node, TUI renderer, Desktop DOM tests
-and both TypeScript checks. Commit the generated GUI bundle with source changes.
-The tests use a
+and both TypeScript checks. The generated GUI bundle is not committed; the
+publish workflow builds it before packing the npm tarball. The tests use a
 stub model and the real native textarea and need no API keys. GitHub Actions
 checks both renderer generations on Ubuntu, macOS and Windows; Desktop checks
 run with the current SDK only. A workflow's
@@ -247,7 +254,8 @@ presence does not replace its actual result or a native OpenCode TUI smoke test.
 
 ## License
 
-[MIT](LICENSE). The author of this implementation is
-[pank-su](https://github.com/pank-su). This is an independent plugin, not an
+[MIT](LICENSE). The original implementation was written by
+[pank-su](https://github.com/pank-su) and is maintained as `opencode-ghost` by
+[npv12](https://github.com/npv12). This is an independent plugin, not an
 official OpenCode component. OpenCode, OpenTUI and SolidJS retain their own
 copyrights and licenses; their source and binaries are not vendored here.

@@ -136,7 +136,7 @@ test('missing state, stats and snapshot degrade to explicit English defaults', (
   assert.match(report, /^Prompt: hidden · requests: blocked$/m);
   assert.match(report, /^Model: not selected$/m);
   assert.match(report, /^Requests: 0 · cache: 0 · errors: 0$/m);
-  assert.match(report, /^Last latency: — ms · context: 0 UTF-16 units$/m);
+  assert.match(report, /^Last latency: n\/a ms · context: 0 UTF-16 units$/m);
   assert.equal(/^Reason:/m.test(report), false);
   assert.equal(/^Error:/m.test(report), false);
 });

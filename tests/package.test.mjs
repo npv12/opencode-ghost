@@ -8,23 +8,26 @@ const root = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
 
 test('public package metadata, license and allowlisted files are self-contained', () => {
   const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
-  assert.equal(pkg.version, '0.3.0');
+  assert.equal(pkg.version, '2.0.0');
   assert.equal(pkg.license, 'MIT');
   assert.equal(pkg.author, 'pank-su');
-  assert.equal(pkg.private, true);
-  assert.match(pkg.repository.url, /github\.com\/pank-su\/opencode-prompt-completion\.git$/);
+  assert.equal(pkg.private, undefined);
+  assert.equal(pkg.publishConfig.access, 'public');
+  assert.equal(pkg.publishConfig.provenance, true);
+  assert.match(pkg.repository.url, /github\.com\/npv12\/opencode-ghost\.git$/);
   assert.equal(pkg.exports['./tui'], './tui.ts');
   assert.equal(pkg.exports['.'], undefined, 'completion needs no server entry');
   assert.equal(pkg.exports['./gui-experimental'], './dist/gui-experimental.cjs');
   assert.deepEqual(pkg.files, ['tui.ts', 'src', 'dist/gui-experimental.cjs', 'README.md', 'LICENSE']);
   for (const file of pkg.files) {
+    if (file.startsWith('dist/')) continue;
     const resolved = path.resolve(root, file);
     assert.ok(resolved.startsWith(root + path.sep));
     assert.ok(fs.existsSync(resolved), file);
   }
   for (const version of Object.values(pkg.devDependencies)) assert.match(version, /^\d+\.\d+\.\d+$/);
   assert.match(fs.readFileSync(path.join(root, 'LICENSE'), 'utf8'), /Copyright \(c\) 2026 pank-su/);
-  for (const file of ['bun.lock', 'tsconfig.json', '.github/workflows/ci.yml', 'tests/fixtures/theme.ts']) {
+  for (const file of ['bun.lock', 'tsconfig.json', '.github/workflows/ci.yml', '.github/workflows/publish.yml', 'tests/fixtures/theme.ts']) {
     assert.ok(fs.statSync(path.join(root, file)).isFile(), file);
   }
 });
@@ -57,7 +60,7 @@ test('documentation is limited to English README and LICENSE with native install
   assert.deepEqual(fs.readdirSync(root).filter(file => file.endsWith('.md')).sort(), ['README.md']);
   const readme = fs.readFileSync(path.join(root, 'README.md'), 'utf8');
   assert.doesNotMatch(readme, /[\u0400-\u04FF]/u);
-  assert.match(readme, /opencode plugin add github:pank-su\/opencode-prompt-completion/);
+  assert.match(readme, /opencode plugin add @npv12\/opencode-ghost/);
   assert.doesNotMatch(readme, /scripts\/install\.mjs/);
   for (const link of readme.matchAll(/\]\(([^)#]+)(?:#[^)]*)?\)/g)) {
     if (!link[1].includes('://')) assert.ok(fs.existsSync(path.join(root, link[1])), link[1]);

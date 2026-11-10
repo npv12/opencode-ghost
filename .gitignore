@@ -1,8 +1,5 @@
 node_modules/
 dist/
-!dist/
-dist/*
-!dist/gui-experimental.cjs
 coverage/
 *.log
 *.bak

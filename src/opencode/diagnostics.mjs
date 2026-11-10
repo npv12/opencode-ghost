@@ -43,7 +43,7 @@ export function completionStatus({ automatic, broken, state, stats, snapshot, ti
     `Prompt: ${snapshot?.presentable ? 'available' : 'hidden'} · requests: ${snapshot?.requestable ? 'available' : 'blocked'}`,
     `Model: ${modelLabel(snapshot?.model)}`,
     `Requests: ${counters.requests ?? 0} · cache: ${counters.cacheHits ?? 0} · errors: ${counters.errors ?? 0}`,
-    `Last latency: ${counters.latencyMs ?? '—'} ms · context: ${snapshot?.context?.length ?? 0} UTF-16 units`,
+    `Last latency: ${counters.latencyMs ?? 'n/a'} ms · context: ${snapshot?.context?.length ?? 0} UTF-16 units`,
     `Timeout: ${timeoutMs} ms`,
   );
   return lines.join('\n');

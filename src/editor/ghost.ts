@@ -75,7 +75,7 @@ export function createInlineGhost(
             // Native textarea painting bypasses renderAfter. Paint beneath its transparent
             // glyph layer: unlike a foreground overlay, this does not capture mouse hits.
             super(renderer, {
-                id: `panksup-prompt-ghost-${editor.num}`,
+                id: `npv12-prompt-ghost-${editor.num}`,
                 position: 'absolute',
                 width: '100%',
                 height: '100%',

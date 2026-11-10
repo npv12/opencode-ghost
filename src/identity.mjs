@@ -1,1 +1,1 @@
-export const PLUGIN_ID = 'panksup.prompt-completion';
+export const PLUGIN_ID = 'npv12.ghost';
