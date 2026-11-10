@@ -35,8 +35,7 @@
     "opencode": ">=2.0.0"
   },
   "publishConfig": {
-    "access": "public",
-    "provenance": true
+    "access": "public"
   },
   "scripts": {
     "test:unit": "node --test tests/prediction.test.mjs tests/context.test.mjs tests/editor.test.mjs tests/retry.test.mjs tests/word.test.mjs tests/prompt-budget.test.mjs tests/package.test.mjs tests/options.test.mjs tests/scheduler.test.mjs tests/model-reference.test.mjs tests/diagnostics.test.mjs",

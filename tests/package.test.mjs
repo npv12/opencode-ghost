@@ -13,7 +13,7 @@ test('public package metadata, license and allowlisted files are self-contained'
   assert.equal(pkg.author, 'pank-su');
   assert.equal(pkg.private, undefined);
   assert.equal(pkg.publishConfig.access, 'public');
-  assert.equal(pkg.publishConfig.provenance, true);
+  assert.equal(pkg.publishConfig.provenance, undefined);
   assert.match(pkg.repository.url, /github\.com\/npv12\/opencode-ghost\.git$/);
   assert.equal(pkg.exports['./tui'], './tui.ts');
   assert.equal(pkg.exports['.'], undefined, 'completion needs no server entry');
